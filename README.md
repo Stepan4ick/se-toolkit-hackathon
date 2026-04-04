@@ -1,170 +1,100 @@
-# Lab 9 - Quiz and Hackathon
+# QuizGen 🧠
 
-The lab opens with a quiz and then kicks off the hackathon.
+> Автоматическая генерация интерактивных квизов из учебных материалов с помощью LLM.
 
-To get the full point for the lab, you need to:
+## Демо
 
-- Pass Tasks 1, 2, 3 during the lab AND
-- Finish Tasks 4 and 5 by the usual deadline of Thursday 23:59.
+![Quiz Generation](docs/screenshots/quiz-gen-demo.png)
+![Quiz Results](docs/screenshots/quiz-results-demo.png)
 
-Each student builds their own project:
+## Контекст продукта
 
-- Go from an idea to a deployed product.
-- Use agents and LLMs throughout.
+**End users:** University students and self-learners
 
-----
+**Проблема:** Reading long lecture notes or articles is passive and boring. Students need an active recall method to retain information better, but manually creating quizzes takes a lot of time.
 
-## Task 1 (graded by TA after the lab)
+**Решение:** Upload any text or document, and instantly generate interactive quizzes for active recall learning.
 
-Pen and paper quiz:
+## Фичи
 
-- 20 mins;
-- closed book, no devices;
-- you get 3 random questions from the question bank;
-- answer at least 2.
+### Реализовано (Version 1)
+- ✅ Генерация квизов из текста через LLM
+- ✅ Интерфейс для прохождения квизов
+- ✅ Подсчёт результатов и показ правильных ответов
+- ✅ Сохранение квизов и попыток в PostgreSQL
 
-## Task 2 (approved by TA during the lab)
+### Запланировано (Version 2)
+- 🔄 User accounts и история прохождения
+- 🔄 Разные типы вопросов (multiple choice, true/false, short answer)
+- 🔄 Spaced repetition для сложных вопросов
+- 🔄 Экспорт/импорт квизов
+- 🔄 Поддержка PDF, DOCX, PPTX файлов
 
-Ideate and plan your project.
+## Использование
 
-### Project idea
+### Запуск через Docker Compose
 
-The project idea must be:
+```bash
+docker-compose up --build
+```
 
-- something simple to build;
-- clearly useful;
-- easy to explain.
+Открой `http://localhost:8000` в браузере.
 
-Define and show to your TA:
+### Локальный запуск (для разработки)
 
-- End-user of the product
-- What problem your product solves for the end-user?
-- The product idea in one short sentence.
-- What is the product's core feature?
+```bash
+# Backend
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
 
-### Implementation plan
+# Frontend - просто открой index.html или раздай через static server
+```
 
-When the idea is approved, produce a plan for two product versions.
+## Деплой
 
-Version 1 does one core thing well:
+### Требования к VM
+- Ubuntu 24.04
+- Docker и Docker Compose установлены
 
-- Pick the one feature most valuable to the end-user and relatively easy to implement;
-- It is a functioning product, not a prototype;
-- Must be shown to the TA upon completion for feedback.
+### Шаг за шагом
 
-Version 2 builds upon Version 1:
+1. Клонируй репозиторий:
+```bash
+git clone <repo-url>
+cd se-toolkit-hackathon
+```
 
-- Improves the initial feature or adds another one on top;
-- Address TA feedback from the lab;
-- Deploy and make it available for use.
+2. Создай `.env` файл с настройками:
+```env
+DATABASE_URL=postgresql://quizuser:quizpass@db:5432/quizdb
+LLM_API_KEY=your-openrouter-api-key
+LLM_API_URL=https://openrouter.ai/api/v1
+```
 
-The product must have the following components, each fulfilling a useful function:
+3. Запусти:
+```bash
+docker-compose up -d
+```
 
-- backend;
-- database;
-- end-user-facing client: web app, mobile app, or LLM-powered agent, e.g. `nanobot`.
+4. Приложение доступно по адресу `http://<your-vm-ip>:8000`
 
-Note:
+## Структура проекта
 
-- You can use the setup from Lab 8 or start from scratch.
-- `Telegram` bots are blocked on university VMs.
-
-## Task 3 (approved by TA during the lab)
-
-Implement Version 1 outlined in the plan:
-
-- Build one core feature;
-- Follow best practices and git workflow;
-- Test it yourself and fix bugs;
-- Have the TA try it as a user;
-- Take note of the TA feedback;
-- Get TA's approval for the task to be marked as DONE.
-
-## Task 4
-
-Implement and deploy Version 2 outlined in the plan:
-
-- Build and polish functionality;
-- Take TA feedback into account;
-- Push all code to the GitHub repo (see the detailed instructions below);
-- Follow best practices and git workflow;
-- Document your solution;
-- Dockerize all services;
-- Deploy it to be accessible to use.
-
-Version 2 can be completed during the lab or after it, before the usual deadline.
-
-## Task 5 (demo and PDF submitted through Moodle)
-
-Submit a presentation with five slides:
-
-1. Title:
-
-   - Product title
-   - Your name
-   - Your university email
-   - Your group
-
-2. Context:
-
-   - End-user of the product
-   - What problem your product solves
-   - The product idea in one short sentence
-
-3. Implementation:
-
-   - How you built the product
-   - What went into Version 1 and Version 2
-   - What TA feedback points you addressed
-
-4. Demo:
-
-   - Pre-recorded video demonstration of Version 2 with voice-over (no longer than 2 minutes).
-   - _Note:_ **This is the most important part of the presentation**.
-
-5. Links:
-
-   - Link and QR code for each of these:
-     - The GitHub repo with the product code
-     - Deployed product (latest version)
-
-----
-
-## Publishing the product code on GitHub
-
-- Publish the product code in a repository on `GitHub`.
-
-  The repository must be called `se-toolkit-hackathon`.
-
-- Add the MIT license file to make your product open-source.
-
-- Add `README.md` in the product repository.
-
-  `README.md` structure:
-
-  - Product name (as title)
-
-  - One-line description
-
-  - Demo:
-    - A couple of relevant screenshots of the product
-
-  - Product context:
-
-    - End users
-    - Problem that your product solves for end users
-    - Your solution
-
-  - Features:
-
-    - Implemented and not yet implemented features
-
-  - Usage:
-
-    - Explain how to use your product
-
-  - Deployment:
-
-    - Which OS the VM should run on (you may assume `Ubuntu 24.04` like on your university VMs)
-    - What should be installed on the VM
-    - Step-by-step deployment instructions
+```
+├── backend/          # FastAPI application
+│   ├── main.py
+│   ├── models.py
+│   ├── database.py
+│   └── requirements.txt
+├── frontend/         # Web interface
+│   ├── index.html
+│   ├── quiz.html
+│   ├── results.html
+│   ├── css/
+│   └── js/
+├── docker-compose.yml
+├── Dockerfile.backend
+├── Dockerfile.frontend
+└── README.md
+```

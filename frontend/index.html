@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizGen - AI Quiz Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🧠 QuizGen</h1>
+            <p class="subtitle">AI-Powered Quiz Generator</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="create-quiz">
+            <h2>Create a New Quiz</h2>
+            <form id="quiz-form">
+                <div class="form-group">
+                    <label for="title">Quiz Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g., Lecture 5 - Neural Networks" value="Auto-generated Quiz">
+                </div>
+
+                <div class="form-group">
+                    <label for="text">Paste Your Study Material</label>
+                    <textarea id="text" name="text" rows="12" placeholder="Paste lecture notes, articles, or any text you want to study..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="num-questions">Number of Questions</label>
+                    <select id="num-questions" name="num_questions">
+                        <option value="3">3 questions</option>
+                        <option value="5" selected>5 questions</option>
+                        <option value="10">10 questions</option>
+                        <option value="15">15 questions</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Generate Quiz 🚀</button>
+            </form>
+
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>AI is generating your quiz... This may take a moment.</p>
+            </div>
+        </section>
+
+        <section class="existing-quizzes">
+            <h2>Your Quizzes</h2>
+            <div id="quizzes-list">
+                <p>Loading quizzes...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
