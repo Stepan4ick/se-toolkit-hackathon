@@ -24,8 +24,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="text">Paste Your Study Material</label>
-                    <textarea id="text" name="text" rows="12" placeholder="Paste lecture notes, articles, or any text you want to study..." required></textarea>
+                    <label>Upload Study Material</label>
+                    <div class="upload-options">
+                        <div class="upload-option">
+                            <label for="file">📄 Upload File (PDF/TXT)</label>
+                            <input type="file" id="file" name="file" accept=".pdf,.txt,.md">
+                            <span id="file-name" class="file-info"></span>
+                        </div>
+                        <div class="upload-divider">
+                            <span>OR</span>
+                        </div>
+                        <div class="upload-option">
+                            <label for="text">✏️ Paste Text</label>
+                            <textarea id="text" name="text" rows="8" placeholder="Paste lecture notes, articles, or any text you want to study..."></textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">

@@ -5,6 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('quiz-form');
     form.addEventListener('submit', handleQuizGeneration);
+
+    // Показываем имя выбранного файла
+    const fileInput = document.getElementById('file');
+    fileInput.addEventListener('change', () => {
+        const fileNameSpan = document.getElementById('file-name');
+        if (fileInput.files.length > 0) {
+            fileNameSpan.textContent = `Selected: ${fileInput.files[0].name}`;
+            // Очищаем textarea если выбран файл
+            document.getElementById('text').value = '';
+        } else {
+            fileNameSpan.textContent = '';
+        }
+    });
 });
 
 async function handleQuizGeneration(e) {
@@ -12,7 +25,14 @@ async function handleQuizGeneration(e) {
 
     const title = document.getElementById('title').value;
     const text = document.getElementById('text').value;
+    const fileInput = document.getElementById('file');
     const numQuestions = parseInt(document.getElementById('num-questions').value);
+
+    // Проверка: что-то должно быть заполнено
+    if (!text.trim() && fileInput.files.length === 0) {
+        alert('Please either paste text or upload a file.');
+        return;
+    }
 
     const loading = document.getElementById('loading');
     const form = document.getElementById('quiz-form');
@@ -21,21 +41,34 @@ async function handleQuizGeneration(e) {
     loading.classList.remove('hidden');
 
     try {
+        // Используем FormData для отправки файлов
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('num_questions', numQuestions);
+        
+        if (text.trim()) {
+            formData.append('text', text);
+        }
+        
+        if (fileInput.files.length > 0) {
+            formData.append('file', fileInput.files[0]);
+        }
+
         const response = await fetch(`${API_BASE}/api/quizzes/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, text, num_questions: numQuestions })
+            body: formData
         });
 
         if (!response.ok) {
-            throw new Error('Failed to generate quiz');
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to generate quiz');
         }
 
         const quiz = await response.json();
         window.location.href = `quiz.html?id=${quiz.id}`;
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to generate quiz. Please try again.');
+        alert(`Failed to generate quiz: ${error.message}`);
         form.classList.remove('hidden');
         loading.classList.add('hidden');
     }

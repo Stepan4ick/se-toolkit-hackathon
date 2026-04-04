@@ -103,6 +103,54 @@ textarea {
     min-height: 200px;
 }
 
+.upload-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.upload-option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.upload-option input[type="file"] {
+    padding: 0.5rem;
+    background: var(--bg);
+    cursor: pointer;
+}
+
+.file-info {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.upload-divider {
+    text-align: center;
+    position: relative;
+    margin: 0.5rem 0;
+}
+
+.upload-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+}
+
+.upload-divider span {
+    position: relative;
+    background: var(--card-bg);
+    padding: 0 1rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
 .btn {
     display: inline-block;
     padding: 0.75rem 1.5rem;

@@ -2,9 +2,10 @@ import os
 import json
 import httpx
 from typing import List
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from pypdf import PdfReader
 from database import engine, get_db, Base
 from models import Quiz, Question, Attempt
 from schemas import (
@@ -26,6 +27,14 @@ app.add_middleware(
 
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_API_URL = os.getenv("LLM_API_URL", "https://openrouter.ai/api/v1")
+
+
+def extract_text_from_pdf(file) -> str:
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+    return text.strip()
 
 
 async def generate_questions_with_llm(text: str, num_questions: int = 5) -> List[dict]:
@@ -78,13 +87,31 @@ def health_check():
 
 
 @app.post("/api/quizzes/generate", response_model=QuizResponse)
-async def generate_quiz(request: QuizGenerateRequest, db: Session = Depends(get_db)):
+async def generate_quiz(
+    title: str = Form("Generated Quiz"),
+    num_questions: int = Form(5),
+    text: str = Form(""),
+    file: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+    # Если загружен файл, извлекаем текст из него
+    if file:
+        if file.content_type == "application/pdf":
+            text = extract_text_from_pdf(file.file)
+        elif file.content_type in ["text/plain", "text/markdown"]:
+            text = (await file.read()).decode("utf-8")
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported file type. Use PDF or TXT.")
+    
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="No text provided.")
+
     try:
-        questions_data = await generate_questions_with_llm(request.text, request.num_questions)
+        questions_data = await generate_questions_with_llm(text, num_questions)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"LLM generation failed: {str(e)}")
 
-    quiz = Quiz(title=request.title, source_text=request.text)
+    quiz = Quiz(title=title, source_text=text)
     db.add(quiz)
     db.flush()
 

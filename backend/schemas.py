@@ -1,6 +1,7 @@
 from pydantic import BaseModel
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 from datetime import datetime
+from fastapi import UploadFile
 
 
 class QuizGenerateRequest(BaseModel):
