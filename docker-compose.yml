@@ -23,14 +23,17 @@ services:
       dockerfile: Dockerfile.backend
     environment:
       DATABASE_URL: postgresql://quizuser:quizpass@db:5432/quizdb
-      LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_API_URL: ${LLM_API_URL:-https://openrouter.ai/api/v1}
+      LLM_API_KEY: ${LLM_API_KEY:-sk-40719f4da5124acda42f83f88acf46af}
+      LLM_API_URL: ${LLM_API_URL:-http://qwen-code-api:8080/v1}
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - quiz-network
+      - lms-network
 
   frontend:
     build:
@@ -41,6 +44,15 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    networks:
+      - quiz-network
 
 volumes:
   postgres_data:
+
+networks:
+  quiz-network:
+    driver: bridge
+  lms-network:
+    external: true
+    name: lms-network

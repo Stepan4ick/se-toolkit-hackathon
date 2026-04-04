@@ -56,10 +56,9 @@ Do not include any text outside the JSON array."""
             headers={
                 "Authorization": f"Bearer {LLM_API_KEY}",
                 "Content-Type": "application/json",
-                "HTTP-Referer": "http://localhost:8000",
             },
             json={
-                "model": "qwen/qwen-2.5-72b-instruct",
+                "model": "coder-model",
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.7,
             }

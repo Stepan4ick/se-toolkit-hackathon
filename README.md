@@ -67,10 +67,11 @@ cd se-toolkit-hackathon
 
 2. Создай `.env` файл с настройками:
 ```env
-DATABASE_URL=postgresql://quizuser:quizpass@db:5432/quizdb
-LLM_API_KEY=your-openrouter-api-key
-LLM_API_URL=https://openrouter.ai/api/v1
+LLM_API_KEY=your-api-key
+LLM_API_URL=http://qwen-code-api:8080/v1
 ```
+
+**Note:** Проект использует LLM API из Lab 8 (`qwen-code-api`). Убедись, что Lab 8 запущен.
 
 3. Запусти:
 ```bash
