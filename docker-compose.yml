@@ -4,15 +4,15 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: quizuser
-      POSTGRES_PASSWORD: quizpass
-      POSTGRES_DB: quizdb
+      POSTGRES_USER: lostfound
+      POSTGRES_PASSWORD: lostfoundpass
+      POSTGRES_DB: lostandfound
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U quizuser -d quizdb"]
+      test: ["CMD-SHELL", "pg_isready -U lostfound -d lostandfound"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,9 +22,8 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     environment:
-      DATABASE_URL: postgresql://quizuser:quizpass@db:5432/quizdb
-      LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_API_URL: ${LLM_API_URL:-https://openrouter.ai/api/v1}
+      DATABASE_URL: postgresql://lostfound:lostfoundpass@db:5432/lostandfound
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
     ports:
       - "8000:8000"
     depends_on:

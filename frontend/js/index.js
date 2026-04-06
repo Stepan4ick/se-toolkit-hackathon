@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
 
-    // Some comm
+    // Some comment
     // Custom select components
     const typeFilter = new CustomSelect('typeFilter');
     const categoryFilter = new CustomSelect('categoryFilter');

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="create.title">Create Post</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href="index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="64" height="64" rx="12" fill="#6366f1"/>
+                        <path d="M32 14C24 14 18 20 18 28c0 4 1.5 7.5 4 10l-2 10h8l2-8h4l2 8h8l-2-10c2.5-2.5 4-6 4-10 0-8-6-14-14-14z" fill="white" opacity="0.95"/>
+                        <circle cx="28" cy="27" r="2.5" fill="#6366f1"/>
+                        <circle cx="36" cy="27" r="2.5" fill="#6366f1"/>
+                        <path d="M27 33 Q32 38 37 33" stroke="#6366f1" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <span data-i18n="app.title">Lost & Found</span>
+                </a>
+                <div class="header__actions">
+                    <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+                    <button class="icon-btn" id="langToggle" title="Switch language">EN</button>
+                    <div id="authLinks" style="display:flex;gap:8px;align-items:center;">
+                        <a href="login.html" class="btn btn--ghost btn--sm" data-i18n="login">Войти</a>
+                        <a href="register.html" class="btn btn--primary btn--sm" data-i18n="register">Регистрация</a>
+                    </div>
+                    <div id="userLinks" style="display:none;gap:8px;align-items:center;">
+                        <a href="create.html" class="btn btn--primary btn--sm" data-i18n="create.post">+ Создать</a>
+                        <button class="btn btn--ghost btn--sm" id="logoutBtn" data-i18n="logout">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container container--narrow">
+            <a href="index.html" class="back-link" data-i18n="back">← Назад</a>
+            <h1 class="page-title" data-i18n="create.title">Создать объявление</h1>
+            
+            <form id="createForm" class="form">
+                <div class="form__group">
+                    <label class="form__label" data-i18n="post.type">Тип объявления</label>
+                    <div class="form__radio-group">
+                        <label class="form__radio">
+                            <input type="radio" name="type" value="lost" required>
+                            <span data-i18n="lost.option">Потерял(а)</span>
+                        </label>
+                        <label class="form__radio">
+                            <input type="radio" name="type" value="found">
+                            <span data-i18n="found.option">Нашёл(а)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form__group">
+                    <label for="title" class="form__label" data-i18n="post.title.label">Название</label>
+                    <input type="text" id="title" name="title" class="form__input" data-i18n-placeholder="post.title.placeholder" placeholder="Например: Синий рюкзак" required maxlength="255">
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label" data-i18n="category.label">Категория</label>
+                    <div class="custom-select" id="categorySelect">
+                        <button type="button" class="custom-select__trigger">
+                            <span class="custom-select__value" data-i18n="category.placeholder">Выберите категорию</span>
+                            <svg class="custom-select__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+                        </button>
+                        <div class="custom-select__dropdown">
+                            <div class="custom-select__option" data-value="electronics" data-i18n="cat.electronics">Электроника</div>
+                            <div class="custom-select__option" data-value="documents" data-i18n="cat.documents">Документы</div>
+                            <div class="custom-select__option" data-value="clothing" data-i18n="cat.clothing">Одежда</div>
+                            <div class="custom-select__option" data-value="accessories" data-i18n="cat.accessories">Аксессуары</div>
+                            <div class="custom-select__option" data-value="other" data-i18n="cat.other">Другое</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="category" name="category" required>
+                </div>
+
+                <div class="form__group">
+                    <label for="location" class="form__label" data-i18n="location.label">Где потеряно/найдено</label>
+                    <input type="text" id="location" name="location" class="form__input" data-i18n-placeholder="location.placeholder" placeholder="Например: Корпус A, 3 этаж">
+                </div>
+
+                <div class="form__group">
+                    <label for="description" class="form__label" data-i18n="description.label">Описание</label>
+                    <textarea id="description" name="description" class="form__textarea" rows="5" data-i18n-placeholder="description.placeholder" placeholder="Подробно опишите вещь..." required></textarea>
+                </div>
+
+                <div class="form__group">
+                    <label for="contact" class="form__label" data-i18n="contact.label">Контакт для связи</label>
+                    <input type="text" id="contact" name="contact" class="form__input" data-i18n-placeholder="contact.placeholder" placeholder="Telegram, email или телефон" required maxlength="255">
+                </div>
+
+                <div class="form__actions">
+                    <button type="submit" class="btn btn--primary btn--lg btn--full-mobile" data-i18n="submit.post">Создать объявление</button>
+                    <a href="index.html" class="btn btn--secondary btn--lg btn--full-mobile" data-i18n="cancel">Отмена</a>
+                </div>
+            </form>
+
+            <div id="successMessage" class="alert alert--success" style="display: none;">
+                <p><span data-i18n="success.create">✅ Объявление успешно создано!</span> <a href="index.html" data-i18n="back.to.list">Вернуться к списку</a></p>
+            </div>
+
+            <div id="errorMessage" class="alert alert--error" style="display: none;"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container"><p data-i18n="footer.text">Campus Lost & Found</p></div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/create.js"></script>
+</body>
+</html>

@@ -1,50 +1,72 @@
-from pydantic import BaseModel
-from typing import Dict, Optional
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional, List
 from datetime import datetime
 
 
-class QuizGenerateRequest(BaseModel):
-    text: str
-    title: Optional[str] = "Generated Quiz"
-    num_questions: Optional[int] = 5
+# ===== User schemas =====
+class UserCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    email: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=6)
 
 
-class QuestionResponse(BaseModel):
+class UserResponse(BaseModel):
     id: int
-    quiz_id: int
-    question_text: str
-    option_a: str
-    option_b: str
-    option_c: str
-    option_d: str
-    correct_answer: str
-    explanation: Optional[str] = None
+    name: str
+    email: str
+    role: str
+    created_at: datetime
 
     class Config:
         from_attributes = True
 
 
-class QuizResponse(BaseModel):
+class UserWithPosts(UserResponse):
+    posts: List["PostResponse"] = []
+
+
+# ===== Auth schemas =====
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserResponse
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+
+# ===== Post schemas =====
+class PostCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=255)
+    description: str = Field(..., min_length=1)
+    type: str = Field(..., pattern="^(lost|found)$")
+    category: str = Field(..., pattern="^(electronics|documents|clothing|accessories|other)$")
+    location: Optional[str] = Field(None, max_length=255)
+    contact: str = Field(..., min_length=1, max_length=255)
+
+
+class PostUpdate(BaseModel):
+    title: Optional[str] = Field(None, max_length=255)
+    description: Optional[str] = None
+    type: Optional[str] = Field(None, pattern="^(lost|found)$")
+    category: Optional[str] = Field(None, pattern="^(electronics|documents|clothing|accessories|other)$")
+    location: Optional[str] = Field(None, max_length=255)
+    contact: Optional[str] = Field(None, max_length=255)
+
+
+class PostResponse(BaseModel):
     id: int
     title: str
-    source_text: str
+    description: str
+    type: str
+    category: str
+    location: Optional[str] = None
+    contact: str
+    is_returned: bool
     created_at: datetime
-    questions: list[QuestionResponse] = []
-
-    class Config:
-        from_attributes = True
-
-
-class AttemptRequest(BaseModel):
-    answers: Dict[str, str]  # question_id -> selected option
-
-
-class AttemptResponse(BaseModel):
-    id: int
-    quiz_id: int
-    score: int
-    total_questions: int
-    completed_at: datetime
+    author_id: int
 
     class Config:
         from_attributes = True
