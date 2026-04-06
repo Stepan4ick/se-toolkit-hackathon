@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://quizuser:quizpass@db:5432/quizdb")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://lostfound:lostfoundpass@db:5432/lostandfound")
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -1,45 +1,34 @@
-from sqlalchemy import Column, Integer, String, Text, JSON, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 
 
-class Quiz(Base):
-    __tablename__ = "quizzes"
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    hashed_password = Column(String(255), nullable=False)
+    role = Column(String(20), default="user")  # "user" or "admin"
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
+
+
+class Post(Base):
+    __tablename__ = "posts"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
-    source_text = Column(Text, nullable=False)
+    description = Column(Text, nullable=False)
+    type = Column(String(10), nullable=False)  # "lost" or "found"
+    category = Column(String(50), nullable=False)
+    location = Column(String(255), nullable=True)
+    contact = Column(String(255), nullable=False)
+    is_returned = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    questions = relationship("Question", back_populates="quiz", cascade="all, delete-orphan")
-    attempts = relationship("Attempt", back_populates="quiz", cascade="all, delete-orphan")
-
-
-class Question(Base):
-    __tablename__ = "questions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    quiz_id = Column(Integer, ForeignKey("quizzes.id"), nullable=False)
-    question_text = Column(Text, nullable=False)
-    option_a = Column(String(500), nullable=False)
-    option_b = Column(String(500), nullable=False)
-    option_c = Column(String(500), nullable=False)
-    option_d = Column(String(500), nullable=False)
-    correct_answer = Column(String(1), nullable=False)  # 'a', 'b', 'c', or 'd'
-    explanation = Column(Text, nullable=True)
-
-    quiz = relationship("Quiz", back_populates="questions")
-
-
-class Attempt(Base):
-    __tablename__ = "attempts"
-
-    id = Column(Integer, primary_key=True, index=True)
-    quiz_id = Column(Integer, ForeignKey("quizzes.id"), nullable=False)
-    answers = Column(JSON, nullable=False)  # {"1": "a", "2": "c", ...}
-    score = Column(Integer, nullable=False)
-    total_questions = Column(Integer, nullable=False)
-    completed_at = Column(DateTime, default=datetime.utcnow)
-
-    quiz = relationship("Quiz", back_populates="attempts")
+    author = relationship("User", back_populates="posts")

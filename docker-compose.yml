@@ -4,15 +4,15 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: quizuser
-      POSTGRES_PASSWORD: quizpass
-      POSTGRES_DB: quizdb
+      POSTGRES_USER: lostfound
+      POSTGRES_PASSWORD: lostfoundpass
+      POSTGRES_DB: lostandfound
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U quizuser -d quizdb"]
+      test: ["CMD-SHELL", "pg_isready -U lostfound -d lostandfound"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,17 +22,14 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     environment:
-      DATABASE_URL: postgresql://quizuser:quizpass@db:5432/quizdb
-      LLM_API_KEY: ${LLM_API_KEY:-sk-40719f4da5124acda42f83f88acf46af}
-      LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:42005/v1}
+      DATABASE_URL: postgresql://lostfound:lostfoundpass@db:5432/lostandfound
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   frontend:
     build:
@@ -43,15 +40,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-    networks:
-      - quiz-network
 
 volumes:
   postgres_data:
-
-networks:
-  quiz-network:
-    driver: bridge
-  lms-network:
-    external: true
-    name: lms-network

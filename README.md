@@ -1,34 +1,35 @@
-# QuizGen 🧠
+# Campus Lost & Found 🎒
 
-> Автоматическая генерация интерактивных квизов из учебных материалов с помощью LLM.
+> Платформа для поиска потерянных и найденных вещей в университете.
 
 ## Демо
 
-![Quiz Generation](docs/screenshots/quiz-gen-demo.png)
-![Quiz Results](docs/screenshots/quiz-results-demo.png)
+![Lost & Found Feed](docs/screenshots/feed-demo.png)
+![Create Post](docs/screenshots/create-post-demo.png)
 
 ## Контекст продукта
 
-**End users:** University students and self-learners
+**End users:** University students and staff
 
-**Проблема:** Reading long lecture notes or articles is passive and boring. Students need an active recall method to retain information better, but manually creating quizzes takes a lot of time.
+**Проблема:** Потерянные вещи сложно искать централизованно. Нет единого места, куда можно зайти и посмотреть все находки или сообщить о потере.
 
-**Решение:** Upload any text or document, and instantly generate interactive quizzes for active recall learning.
+**Решение:** Единая платформа, где студенты и сотрудники могут публиковать объявления о потерянных и найденных вещах, с поиском и фильтрами.
 
 ## Фичи
 
 ### Реализовано (Version 1)
-- ✅ Генерация квизов из текста через LLM
-- ✅ Интерфейс для прохождения квизов
-- ✅ Подсчёт результатов и показ правильных ответов
-- ✅ Сохранение квизов и попыток в PostgreSQL
+- ✅ Создание объявлений о потерянных/найденных вещах
+- ✅ Категории (электроника, документы, одежда, другое)
+- ✅ Поиск по названию и описанию
+- ✅ Список всех объявлений
+- ✅ Отметка "Вещь возвращена"
 
 ### Запланировано (Version 2)
-- 🔄 User accounts и история прохождения
-- 🔄 Разные типы вопросов (multiple choice, true/false, short answer)
-- 🔄 Spaced repetition для сложных вопросов
-- 🔄 Экспорт/импорт квизов
-- 🔄 Поддержка PDF, DOCX, PPTX файлов
+- 🔄 Фильтры по локации и дате
+- 🔄 Чат/контакты владельца
+- 🔄 Загрузка фото
+- 🔄 Email-уведомления при совпадении
+- 🔄 Модерация объявлений
 
 ## Использование
 
@@ -65,13 +66,10 @@ git clone <repo-url>
 cd se-toolkit-hackathon
 ```
 
-2. Создай `.env` файл с настройками:
+2. Создай `.env` файл с настройками (опционально):
 ```env
-LLM_API_KEY=your-api-key
-LLM_API_URL=http://qwen-code-api:8080/v1
+DATABASE_URL=postgresql://lostfound:password@db:5432/lostandfound
 ```
-
-**Note:** Проект использует LLM API из Lab 8 (`qwen-code-api`). Убедись, что Lab 8 запущен.
 
 3. Запусти:
 ```bash
@@ -80,18 +78,34 @@ docker-compose up -d
 
 4. Приложение доступно по адресу `http://<your-vm-ip>:8000`
 
+## Аккаунт админа
+
+При первом запуске автоматически создаётся аккаунт администратора:
+
+| Поле | Значение |
+|------|----------|
+| Email | `stepagrek07@gmail.com` |
+| Пароль | `QAZWSXEDC` |
+
+Администратор может:
+- Просматривать всех зарегистрированных пользователей
+- Смотреть посты каждого пользователя
+- Удалять любые посты
+- Отмечать любые посты как возвращённые
+
 ## Структура проекта
 
 ```
 ├── backend/          # FastAPI application
 │   ├── main.py
 │   ├── models.py
+│   ├── schemas.py
 │   ├── database.py
 │   └── requirements.txt
 ├── frontend/         # Web interface
 │   ├── index.html
-│   ├── quiz.html
-│   ├── results.html
+│   ├── create.html
+│   ├── post.html
 │   ├── css/
 │   └── js/
 ├── docker-compose.yml
@@ -99,3 +113,15 @@ docker-compose up -d
 ├── Dockerfile.frontend
 └── README.md
 ```
+
+## API Endpoints
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| GET | `/api/health` | Проверка работоспособности |
+| GET | `/api/posts` | Список объявлений (с поиском) |
+| GET | `/api/posts/{id}` | Конкретное объявление |
+| POST | `/api/posts` | Создать объявление |
+| PUT | `/api/posts/{id}` | Обновить объявление |
+| PATCH | `/api/posts/{id}/return` | Отметить как возвращённое |
+| DELETE | `/api/posts/{id}` | Удалить объявление |

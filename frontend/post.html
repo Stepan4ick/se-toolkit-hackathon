@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="app.title">Lost & Found</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href="index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="64" height="64" rx="12" fill="#6366f1"/>
+                        <path d="M32 14C24 14 18 20 18 28c0 4 1.5 7.5 4 10l-2 10h8l2-8h4l2 8h8l-2-10c2.5-2.5 4-6 4-10 0-8-6-14-14-14z" fill="white" opacity="0.95"/>
+                        <circle cx="28" cy="27" r="2.5" fill="#6366f1"/>
+                        <circle cx="36" cy="27" r="2.5" fill="#6366f1"/>
+                        <path d="M27 33 Q32 38 37 33" stroke="#6366f1" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <span data-i18n="app.title">Lost & Found</span>
+                </a>
+                <div class="header__actions">
+                    <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+                    <button class="icon-btn" id="langToggle" title="Switch language">EN</button>
+                    <div id="authLinks" style="display:flex;gap:8px;align-items:center;">
+                        <a href="login.html" class="btn btn--ghost btn--sm" data-i18n="login">Войти</a>
+                        <a href="register.html" class="btn btn--primary btn--sm" data-i18n="register">Регистрация</a>
+                    </div>
+                    <div id="userLinks" style="display:none;gap:8px;align-items:center;">
+                        <a href="create.html" class="btn btn--primary btn--sm" data-i18n="create.post">+ Создать</a>
+                        <button class="btn btn--ghost btn--sm" id="logoutBtn" data-i18n="logout">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container container--narrow">
+            <a href="index.html" class="back-link" data-i18n="back">← Назад</a>
+            
+            <div id="postContainer" class="post-detail" style="display: none;">
+                <div class="post-detail__header">
+                    <span id="postType" class="badge"></span>
+                    <span id="postReturned" class="badge badge--returned" style="display: none;" data-i18n="returned.badge">Вещь возвращена</span>
+                </div>
+                
+                <h1 id="postTitle" class="post-detail__title"></h1>
+                
+                <div class="post-detail__meta">
+                    <div class="meta-item">
+                        <span class="meta-item__icon">📁</span>
+                        <span id="postCategory" class="meta-item__text"></span>
+                    </div>
+                    <div class="meta-item" id="postLocationItem" style="display: none;">
+                        <span class="meta-item__icon">📍</span>
+                        <span id="postLocation" class="meta-item__text"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-item__icon">📅</span>
+                        <span id="postDate" class="meta-item__text"></span>
+                    </div>
+                </div>
+
+                <div class="post-detail__content">
+                    <h3 data-i18n="description.heading">Описание</h3>
+                    <p id="postDescription" class="post-detail__description"></p>
+                </div>
+
+                <div class="post-detail__contact">
+                    <h3 data-i18n="contact.heading">Контакт для связи</h3>
+                    <p id="postContact" class="post-detail__contact-info"></p>
+                </div>
+
+                <div class="post-detail__actions">
+                    <button id="markReturnedBtn" class="btn btn--success" data-i18n="mark.returned">✅ Отметить как возвращённое</button>
+                    <button id="deleteBtn" class="btn btn--danger" data-i18n="delete.post">🗑 Удалить</button>
+                </div>
+            </div>
+
+            <div id="loadingState" class="loading-state">
+                <div class="spinner"></div>
+                <p data-i18n="loading">Загрузка...</p>
+            </div>
+
+            <div id="notFoundState" class="empty-state" style="display: none;">
+                <div class="empty-state__icon">❌</div>
+                <h3 class="empty-state__title" data-i18n="not.found.title">Объявление не найдено</h3>
+                <p class="empty-state__text" data-i18n="not.found.text">Возможно, оно было удалено</p>
+                <a href="index.html" class="btn btn--primary" data-i18n="back.to.list">Вернуться к списку</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container"><p data-i18n="footer.text">Campus Lost & Found</p></div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/post.js"></script>
+</body>
+</html>

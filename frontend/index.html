@@ -1,82 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizGen - AI Quiz Generator</title>
+    <title data-i18n="app.title">Lost & Found</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
+    <header class="header">
         <div class="container">
-            <h1>🧠 QuizGen</h1>
-            <p class="subtitle">AI-Powered Quiz Generator</p>
+            <div class="header__inner">
+                <a href="index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="64" height="64" rx="12" fill="#6366f1"/>
+                        <path d="M32 14C24 14 18 20 18 28c0 4 1.5 7.5 4 10l-2 10h8l2-8h4l2 8h8l-2-10c2.5-2.5 4-6 4-10 0-8-6-14-14-14z" fill="white" opacity="0.95"/>
+                        <circle cx="28" cy="27" r="2.5" fill="#6366f1"/>
+                        <circle cx="36" cy="27" r="2.5" fill="#6366f1"/>
+                        <path d="M27 33 Q32 38 37 33" stroke="#6366f1" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    <span data-i18n="app.title">Lost & Found</span>
+                </a>
+                <div class="header__actions">
+                    <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+                    <button class="icon-btn" id="langToggle" title="Switch language">EN</button>
+                    <div id="authLinks" style="display:flex;gap:8px;align-items:center;">
+                        <a href="login.html" class="btn btn--ghost btn--sm" data-i18n="login">Войти</a>
+                        <a href="register.html" class="btn btn--primary btn--sm" data-i18n="register">Регистрация</a>
+                    </div>
+                    <div id="userLinks" style="display:none;gap:8px;align-items:center;">
+                        <a href="admin.html" class="btn btn--ghost btn--sm" id="adminLink" style="display:none;" data-i18n="admin.panel">Админ</a>
+                        <a href="create.html" class="btn btn--primary btn--sm" data-i18n="create.post">+ Создать</a>
+                        <button class="btn btn--ghost btn--sm" id="logoutBtn" data-i18n="logout">Выйти</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="container">
-        <section class="create-quiz">
-            <h2>Create a New Quiz</h2>
-            <form id="quiz-form">
-                <div class="form-group">
-                    <label for="title">Quiz Title</label>
-                    <input type="text" id="title" name="title" placeholder="e.g., Lecture 5 - Neural Networks" value="Auto-generated Quiz">
-                </div>
-
-                <div class="form-group">
-                    <label>Upload Study Material</label>
-                    <div class="upload-options">
-                        <div class="upload-option">
-                            <label for="file">📄 Upload File (PDF/TXT)</label>
-                            <input type="file" id="file" name="file" accept=".pdf,.txt,.md">
-                            <span id="file-name" class="file-info"></span>
-                        </div>
-                        <div class="upload-divider">
-                            <span>OR</span>
-                        </div>
-                        <div class="upload-option">
-                            <label for="text">✏️ Paste Text</label>
-                            <textarea id="text" name="text" rows="8" placeholder="Paste lecture notes, articles, or any text you want to study..."></textarea>
+    <main class="main">
+        <div class="container">
+            <section class="search-section">
+                <h1 class="page-title" data-i18n="main.title">Поиск потерянных и найденных вещей</h1>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" class="search-bar__input" data-i18n-placeholder="search.placeholder" placeholder="Поиск по названию или описанию...">
+                    
+                    <div class="custom-select" id="typeFilter">
+                        <button type="button" class="custom-select__trigger">
+                            <span class="custom-select__value" data-i18n="all.types">Все типы</span>
+                            <svg class="custom-select__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+                        </button>
+                        <div class="custom-select__dropdown">
+                            <div class="custom-select__option" data-value="" data-i18n="all.types">Все типы</div>
+                            <div class="custom-select__option" data-value="lost" data-i18n="lost">Потеряно</div>
+                            <div class="custom-select__option" data-value="found" data-i18n="found">Найдено</div>
                         </div>
                     </div>
+
+                    <div class="custom-select" id="categoryFilter">
+                        <button type="button" class="custom-select__trigger">
+                            <span class="custom-select__value" data-i18n="all.categories">Все категории</span>
+                            <svg class="custom-select__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+                        </button>
+                        <div class="custom-select__dropdown">
+                            <div class="custom-select__option" data-value="" data-i18n="all.categories">Все категории</div>
+                            <div class="custom-select__option" data-value="electronics" data-i18n="cat.electronics">Электроника</div>
+                            <div class="custom-select__option" data-value="documents" data-i18n="cat.documents">Документы</div>
+                            <div class="custom-select__option" data-value="clothing" data-i18n="cat.clothing">Одежда</div>
+                            <div class="custom-select__option" data-value="accessories" data-i18n="cat.accessories">Аксессуары</div>
+                            <div class="custom-select__option" data-value="other" data-i18n="cat.other">Другое</div>
+                        </div>
+                    </div>
+                    
+                    <button id="searchBtn" class="btn btn--secondary" data-i18n="search">Найти</button>
                 </div>
+            </section>
 
-                <div class="form-group">
-                    <label for="num-questions">Number of Questions</label>
-                    <select id="num-questions" name="num_questions">
-                        <option value="3">3 questions</option>
-                        <option value="5" selected>5 questions</option>
-                        <option value="10">10 questions</option>
-                        <option value="15">15 questions</option>
-                    </select>
+            <section class="posts-section">
+                <div id="postsList" class="posts-grid"></div>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state__icon">📭</div>
+                    <h3 class="empty-state__title" data-i18n="empty.title">Объявлений не найдено</h3>
+                    <p class="empty-state__text" data-i18n="empty.text">Попробуйте изменить параметры поиска</p>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Generate Quiz 🚀</button>
-            </form>
-
-            <div id="loading" class="hidden">
-                <div class="spinner"></div>
-                <p>AI is generating your quiz... This may take a moment.</p>
-            </div>
-        </section>
-
-        <section class="existing-quizzes">
-            <h2>Your Quizzes</h2>
-            <div id="quizzes-list">
-                <p>Loading quizzes...</p>
-            </div>
-        </section>
+            </section>
+        </div>
     </main>
 
+    <footer class="footer">
+        <div class="container">
+            <p data-i18n="footer.text">Campus Lost & Found</p>
+        </div>
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
     <script src="js/app.js"></script>
-    <script>
-        // Предотвращаем открытие файлов при перетаскивании в браузер
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            document.body.addEventListener(eventName, e => {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        });
-    </script>
+    <script src="js/index.js"></script>
 </body>
 </html>

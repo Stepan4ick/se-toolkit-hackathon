@@ -1,109 +1,145 @@
-const API_BASE = '';
-
+// Shared app initialization - runs on every page
 document.addEventListener('DOMContentLoaded', () => {
-    loadQuizzes();
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+        const updateThemeIcon = () => {
+            themeBtn.textContent = getTheme() === 'dark' ? '◑' : '◐';
+        };
+        updateThemeIcon();
+        themeBtn.addEventListener('click', () => {
+            toggleTheme();
+            updateThemeIcon();
+        });
+    }
 
-    const form = document.getElementById('quiz-form');
-    form.addEventListener('submit', handleQuizGeneration);
+    // Language toggle
+    const langBtn = document.getElementById('langToggle');
+    if (langBtn) {
+        const updateLangBtn = () => {
+            langBtn.textContent = getLanguage() === 'ru' ? 'EN' : 'RU';
+        };
+        updateLangBtn();
+        langBtn.addEventListener('click', () => {
+            const newLang = getLanguage() === 'ru' ? 'en' : 'ru';
+            setLanguage(newLang);
+            updateLangBtn();
+            applyI18n();
+        });
+    }
 
-    // Показываем имя выбранного файла
-    const fileInput = document.getElementById('file');
-    fileInput.addEventListener('change', () => {
-        const fileNameSpan = document.getElementById('file-name');
-        if (fileInput.files.length > 0) {
-            fileNameSpan.textContent = `Selected: ${fileInput.files[0].name}`;
-            // Очищаем textarea если выбран файл
-            document.getElementById('text').value = '';
-        } else {
-            fileNameSpan.textContent = '';
-        }
-    });
+    // Apply i18n translations
+    applyI18n();
+
+    // Auth state
+    updateAuthUI();
+
+    // Logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
 });
 
-async function handleQuizGeneration(e) {
-    e.preventDefault();
+function applyI18n() {
+    // Translate text content — only on leaf elements to preserve inner links
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        if (el.children.length === 0) {
+            el.textContent = t(el.getAttribute('data-i18n'));
+        }
+    });
+    // Translate placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+    });
+    // Update HTML lang
+    document.documentElement.lang = getLanguage();
+}
 
-    const title = document.getElementById('title').value;
-    const text = document.getElementById('text').value;
-    const fileInput = document.getElementById('file');
-    const numQuestions = parseInt(document.getElementById('num-questions').value);
+function updateAuthUI() {
+    const authLinks = document.getElementById('authLinks');
+    const userLinks = document.getElementById('userLinks');
+    const adminLink = document.getElementById('adminLink');
 
-    // Проверка: что-то должно быть заполнено
-    if (!text.trim() && fileInput.files.length === 0) {
-        alert('Please either paste text or upload a file.');
-        return;
+    if (!authLinks || !userLinks) return;
+
+    if (isLoggedIn()) {
+        authLinks.style.display = 'none';
+        userLinks.style.display = 'flex';
+        if (adminLink) {
+            adminLink.style.display = isAdmin() ? 'inline-flex' : 'none';
+        }
+    } else {
+        authLinks.style.display = 'flex';
+        userLinks.style.display = 'none';
+        if (adminLink) {
+            adminLink.style.display = 'none';
+        }
+    }
+}
+
+/* ===== Custom Select Component ===== */
+class CustomSelect {
+    constructor(elementId) {
+        this.el = document.getElementById(elementId);
+        if (!this.el) return;
+        this.value = '';
+        this.callbacks = [];
+        this._init();
     }
 
-    const loading = document.getElementById('loading');
-    const form = document.getElementById('quiz-form');
+    _init() {
+        const self = this;
+        const trigger = this.el.querySelector('.custom-select__trigger');
+        const options = this.el.querySelectorAll('.custom-select__option');
 
-    form.classList.add('hidden');
-    loading.classList.remove('hidden');
-
-    try {
-        // Используем FormData для отправки файлов
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('num_questions', numQuestions);
-        
-        if (text.trim()) {
-            formData.append('text', text);
-        }
-        
-        if (fileInput.files.length > 0) {
-            formData.append('file', fileInput.files[0]);
-        }
-
-        const response = await fetch(`${API_BASE}/api/quizzes/generate`, {
-            method: 'POST',
-            body: formData
+        // Toggle dropdown on trigger click
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Close other selects
+            document.querySelectorAll('.custom-select.open').forEach(function(s) {
+                if (s !== self.el) s.classList.remove('open');
+            });
+            self.el.classList.toggle('open');
         });
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.detail || 'Failed to generate quiz');
-        }
+        // Handle option clicks
+        options.forEach(function(opt) {
+            opt.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Option clicked:', opt.dataset.value, opt.textContent);
+                self.value = opt.dataset.value;
+                const valueSpan = self.el.querySelector('.custom-select__value');
+                valueSpan.textContent = opt.textContent;
+                options.forEach(function(o) { o.classList.remove('selected'); });
+                opt.classList.add('selected');
+                self.el.classList.remove('open');
+                console.log('CustomSelect value set to:', self.value);
+                self.callbacks.forEach(function(cb) { cb(); });
+            });
+        });
+    }
 
-        const quiz = await response.json();
-        window.location.href = `quiz.html?id=${quiz.id}`;
-    } catch (error) {
-        console.error('Error:', error);
-        alert(`Failed to generate quiz: ${error.message}`);
-        form.classList.remove('hidden');
-        loading.classList.add('hidden');
+    onChange(callback) {
+        this.callbacks.push(callback);
+    }
+
+    refreshLabels() {
+        const valueSpan = this.el.querySelector('.custom-select__value');
+        const selected = this.el.querySelector('.custom-select__option.selected');
+        if (selected && valueSpan) {
+            valueSpan.textContent = selected.textContent;
+        }
     }
 }
 
-async function loadQuizzes() {
-    const container = document.getElementById('quizzes-list');
-
-    try {
-        const response = await fetch(`${API_BASE}/api/quizzes`);
-        const quizzes = await response.json();
-
-        if (quizzes.length === 0) {
-            container.innerHTML = '<p class="empty-state">No quizzes yet. Create your first one above!</p>';
-            return;
-        }
-
-        container.innerHTML = quizzes.map(quiz => `
-            <div class="quiz-card">
-                <h3>${escapeHtml(quiz.title)}</h3>
-                <p class="quiz-meta">
-                    ${quiz.questions.length} questions • 
-                    Created ${new Date(quiz.created_at).toLocaleString()}
-                </p>
-                <a href="quiz.html?id=${quiz.id}" class="btn btn-primary">Take Quiz</a>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Error loading quizzes:', error);
-        container.innerHTML = '<p class="empty-state">Failed to load quizzes.</p>';
+// Close custom selects on outside click
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select.open').forEach(function(s) {
+            s.classList.remove('open');
+        });
     }
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+});
