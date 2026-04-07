@@ -4,12 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) {
         const updateThemeIcon = () => {
-            themeBtn.textContent = getTheme() === 'dark' ? '◑' : '◐';
+            // SVG icons handle visibility via CSS, no JS needed
         };
-        updateThemeIcon();
         themeBtn.addEventListener('click', () => {
             toggleTheme();
-            updateThemeIcon();
         });
     }
 

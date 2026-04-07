@@ -16,6 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
 
+        // Validate name
+        if (name.length < 2) {
+            errorMessage.textContent = '❌ Имя должно содержать минимум 2 символа';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        if (!/^[a-zA-Zа-яА-ЯёЁ\s\-']+$/.test(name)) {
+            errorMessage.textContent = '❌ Имя может содержать только буквы, пробелы, дефисы и апострофы';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
         if (password !== confirmPassword) {
             errorMessage.textContent = '❌ Passwords do not match';
             errorMessage.style.display = 'block';

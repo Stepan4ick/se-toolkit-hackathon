@@ -24,13 +24,34 @@ document.addEventListener('DOMContentLoaded', () => {
         successMessage.style.display = 'none';
 
         const formData = new FormData(form);
+        const title = formData.get('title').trim();
+        const description = formData.get('description').trim();
+        const type = formData.get('type');
+        const category = categorySelect.value;
+        const location = formData.get('location').trim() || null;
+        const contact = formData.get('contact').trim();
+
+        // Validate category
+        if (!category) {
+            errorMessage.textContent = '❌ Пожалуйста, выберите категорию';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        // Validate contact
+        if (!contact) {
+            errorMessage.textContent = '❌ Пожалуйста, укажите контакт для связи';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
         const data = {
-            title: formData.get('title').trim(),
-            description: formData.get('description').trim(),
-            type: formData.get('type'),
-            category: categorySelect.value,
-            location: formData.get('location').trim() || null,
-            contact: formData.get('contact').trim()
+            title,
+            description,
+            type,
+            category,
+            location,
+            contact
         };
 
         try {
